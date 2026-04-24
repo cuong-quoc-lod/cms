@@ -16,6 +16,7 @@ const Login = () => {
     try {
       const data = await api.login(username, password);
       localStorage.setItem('token', data.access_token);
+      localStorage.setItem('username', data.username || username);
       navigate('/customers');
     } catch (err) {
       setError(err.message || 'Đã có lỗi xảy ra');

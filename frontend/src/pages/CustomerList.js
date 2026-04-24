@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Search, Plus } from 'lucide-react';
 import CustomerCard from '../components/CustomerCard';
 import CustomerModal from '../components/CustomerModal';
+import Navbar from '../components/Navbar';
 import { api } from '../utils/api';
 
 const CustomerList = () => {
@@ -80,7 +81,10 @@ const CustomerList = () => {
   };
 
   return (
-    <div className="dashboard-layout">
+    <>
+      <Navbar />
+      <div className="page-wrapper">
+      <div className="dashboard-layout">
       <div className="header">
         <h1 style={{ fontSize: '2rem', color: 'var(--text-main)' }}>Quản lý Khách hàng</h1>
         
@@ -134,6 +138,8 @@ const CustomerList = () => {
         mode={modalMode}
       />
     </div>
+      </div>
+    </>
   );
 };
 
