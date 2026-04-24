@@ -1,3 +1,4 @@
+import ssl
 from pymongo import MongoClient
 from pymongo.database import Database
 from src.config import MONGO_URI, MONGO_DB_NAME
@@ -10,7 +11,11 @@ def get_db() -> Database:
     """Return the shared database instance, creating it on first call."""
     global _client, _db
     if _db is None:
-        _client = MongoClient(MONGO_URI)
+        _client = MongoClient(
+            MONGO_URI,
+            tls=True,
+            tlsInsecure=True,
+        )
         _db = _client[MONGO_DB_NAME]
     return _db
 
@@ -22,3 +27,4 @@ def close_db() -> None:
         _client.close()
         _client = None
         _db = None
+
