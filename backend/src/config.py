@@ -1,4 +1,5 @@
 import os
+import secrets
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -22,3 +23,10 @@ ALLOWED_ORIGINS: list[str] = [
 # Rate Limiting
 RATE_LIMIT: str = os.getenv("RATE_LIMIT", "10000")
 RATE_LIMIT_PER_MINUTE: str = f"{RATE_LIMIT}/minute"
+
+# JWT settings
+JWT_SECRET_KEY: str = os.getenv("JWT_SECRET_KEY", secrets.token_hex(32))
+JWT_ALGORITHM: str = os.getenv("JWT_ALGORITHM", "HS256")
+JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int = int(
+    os.getenv("JWT_ACCESS_TOKEN_EXPIRE_MINUTES", "60")
+)

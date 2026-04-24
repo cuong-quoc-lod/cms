@@ -8,6 +8,7 @@ from slowapi.errors import RateLimitExceeded
 from src.config import ALLOWED_ORIGINS, RATE_LIMIT_PER_MINUTE, APP_ENV
 from src.database import get_db, close_db
 from src.health.router import router as health_router
+from src.auth.router import router as auth_router
 from src.customer.router import router as customer_router
 
 # ── Rate limiter ───────────────────────────────────────────────────────────────
@@ -55,6 +56,7 @@ async def shutdown_event():
 
 # ── Routers ────────────────────────────────────────────────────────────────────
 app.include_router(health_router)
+app.include_router(auth_router)
 app.include_router(customer_router)
 
 

@@ -11,6 +11,7 @@ from src.customer.schemas import (
 from src.customer.service import CustomerService
 from src.customer.repository import CustomerRepository
 from src.database import get_db
+from src.dependencies import get_current_user_id
 
 
 router = APIRouter(prefix="/api/customer", tags=["Customer"])
@@ -42,6 +43,7 @@ def list_customers(
     page: int = Query(1, ge=1, description="Page number (starts at 1)"),
     page_size: int = Query(20, ge=1, le=100, description="Items per page (max 100)"),
     service: CustomerService = Depends(get_customer_service),
+    _user_id: str = Depends(get_current_user_id),
 ) -> CustomerListResponse:
     return service.get_customers(
         search=search,
@@ -59,6 +61,7 @@ def list_customers(
 def get_customer(
     customer_id: str,
     service: CustomerService = Depends(get_customer_service),
+    _user_id: str = Depends(get_current_user_id),
 ) -> CustomerResponse:
     return service.get_customer_by_id(customer_id)
 
@@ -72,6 +75,7 @@ def get_customer(
 def create_customer(
     payload: CustomerCreateRequest,
     service: CustomerService = Depends(get_customer_service),
+    _user_id: str = Depends(get_current_user_id),
 ) -> CustomerResponse:
     return service.create_customer(payload)
 
@@ -85,6 +89,7 @@ def update_customer(
     customer_id: str,
     payload: CustomerUpdateRequest,
     service: CustomerService = Depends(get_customer_service),
+    _user_id: str = Depends(get_current_user_id),
 ) -> CustomerResponse:
     return service.update_customer(customer_id, payload)
 
@@ -97,5 +102,6 @@ def update_customer(
 def delete_customer(
     customer_id: str,
     service: CustomerService = Depends(get_customer_service),
+    _user_id: str = Depends(get_current_user_id),
 ) -> dict:
     return service.delete_customer(customer_id)

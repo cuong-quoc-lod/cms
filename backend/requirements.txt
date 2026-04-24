@@ -5,4 +5,4 @@ bcrypt
 slowapi
 python-dotenv
 pymongo
-email-validator
+python-jose[cryptography]

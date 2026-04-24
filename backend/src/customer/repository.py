@@ -38,7 +38,10 @@ class CustomerRepository:
     def __init__(self, db: Database):
         self.col = db[COLLECTION]
         # Ensure unique index on email
-        self.col.create_index([("email", ASCENDING)], unique=True)
+        try:
+            self.col.create_index([("email", ASCENDING)], unique=True)
+        except Exception:
+            pass
 
     # ---------- Read ----------
 
