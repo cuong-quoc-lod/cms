@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
-from typing import Optional
-from pydantic import BaseModel, EmailStr, Field, field_validator
+from pydantic import BaseModel, EmailStr, Field, field_validator, StringConstraints
+from typing import Annotated, Optional
 import re
 
 
@@ -20,10 +20,18 @@ def _validate_phone(v: str) -> str:
 class CustomerCreateRequest(BaseModel):
     """Payload for creating a new customer."""
 
-    name: str = Field(..., min_length=1, max_length=100, examples=["Nguyen Van A"])
-    email: EmailStr = Field(..., examples=["example@email.com"])
-    phone: Optional[str] = Field(None, examples=["+84901234567"])
-    address: Optional[str] = Field(None, max_length=255)
+    name: Annotated[
+        str, StringConstraints(strip_whitespace=True, min_length=1, max_length=100)
+    ] = Field(..., examples=["Nguyen Van A"])
+    email: Annotated[EmailStr, StringConstraints(strip_whitespace=True)] = Field(
+        ..., examples=["example@email.com"]
+    )
+    phone: Annotated[Optional[str], StringConstraints(strip_whitespace=True)] = Field(
+        None, examples=["+84901234567"]
+    )
+    address: Annotated[
+        Optional[str], StringConstraints(strip_whitespace=True, max_length=255)
+    ] = Field(None)
     note: Optional[str] = Field(None, max_length=500)
 
     @field_validator("phone")
@@ -37,10 +45,19 @@ class CustomerCreateRequest(BaseModel):
 class CustomerUpdateRequest(BaseModel):
     """Payload for updating an existing customer (all fields optional)."""
 
-    name: Optional[str] = Field(None, min_length=1, max_length=100)
-    email: Optional[EmailStr] = None
-    phone: Optional[str] = None
-    address: Optional[str] = Field(None, max_length=255)
+    name: Annotated[
+        Optional[str],
+        StringConstraints(strip_whitespace=True, min_length=1, max_length=100),
+    ] = Field(None)
+    email: Annotated[
+        Optional[EmailStr], StringConstraints(strip_whitespace=True)
+    ] = Field(None)
+    phone: Annotated[Optional[str], StringConstraints(strip_whitespace=True)] = Field(
+        None
+    )
+    address: Annotated[
+        Optional[str], StringConstraints(strip_whitespace=True, max_length=255)
+    ] = Field(None)
     note: Optional[str] = Field(None, max_length=500)
     is_active: Optional[bool] = None
 
