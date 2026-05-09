@@ -1,6 +1,6 @@
 from datetime import datetime
-from typing import Optional
-from pydantic import BaseModel, Field
+from typing import Annotated, Optional
+from pydantic import BaseModel, Field, StringConstraints
 
 
 # ── Request schemas ────────────────────────────────────────────────────────────
@@ -8,11 +8,16 @@ from pydantic import BaseModel, Field
 class RegisterRequest(BaseModel):
     """Payload for creating a new user account."""
 
-    username: str = Field(
+    username: Annotated[
+        str,
+        StringConstraints(
+            strip_whitespace=True,
+            min_length=3,
+            max_length=50,
+            pattern=r"^[a-zA-Z0-9_]+$",
+        ),
+    ] = Field(
         ...,
-        min_length=3,
-        max_length=50,
-        pattern=r"^[a-zA-Z0-9_]+$",
         examples=["admin"],
         description="Chỉ gồm chữ cái, số, dấu gạch dưới (3–50 ký tự)",
     )
@@ -23,17 +28,17 @@ class RegisterRequest(BaseModel):
         examples=["Secret@123"],
         description="Mật khẩu tối thiểu 6 ký tự",
     )
-    full_name: Optional[str] = Field(
-        None,
-        max_length=100,
-        examples=["Nguyen Van A"],
-    )
+    full_name: Annotated[
+        str, StringConstraints(strip_whitespace=True, min_length=1, max_length=100)
+    ] = Field(..., examples=["Nguyen Van A"])
 
 
 class LoginRequest(BaseModel):
     """Payload for user login."""
 
-    username: str = Field(..., examples=["admin"])
+    username: Annotated[str, StringConstraints(strip_whitespace=True)] = Field(
+        ..., examples=["admin"]
+    )
     password: str = Field(..., examples=["Secret@123"])
 
 
