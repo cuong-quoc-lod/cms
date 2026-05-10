@@ -1,4 +1,3 @@
-import os
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -32,19 +31,9 @@ app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 # ── Middleware ─────────────────────────────────────────────────────────────────
-# Lấy chuỗi từ biến môi trường, mặc định là rỗng nếu không có
-origins_raw = os.getenv("ALLOWED_ORIGINS", "")
-
-# Xử lý chuỗi thành mảng: cắt bởi dấu phẩy và xóa khoảng trắng thừa
-# Nếu không có biến môi trường, mặc định cho phép localhost để bạn vẫn chạy được ở máy
-if origins_raw:
-    origins = [o.strip() for o in origins_raw.split(",")]
-else:
-    origins = ["http://localhost:3000", "http://localhost:5173"]
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,  # Bây giờ 'origins' đã là một List chuẩn
+    allow_origins=ALLOWED_ORIGINS, 
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
