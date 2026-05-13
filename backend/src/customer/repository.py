@@ -3,7 +3,7 @@ from typing import Optional
 from bson import ObjectId
 from pymongo.database import Database
 from pymongo import ASCENDING, DESCENDING
-
+import re
 
 COLLECTION = "customers"
 
@@ -24,10 +24,11 @@ def _build_filter(
     if is_active is not None:
         query["is_active"] = is_active
     if search:
+        safe_search = re.escape(search)
         query["$or"] = [
-            {"name": {"$regex": search, "$options": "i"}},
-            {"email": {"$regex": search, "$options": "i"}},
-            {"phone": {"$regex": search, "$options": "i"}},
+            {"name": {"$regex": safe_search, "$options": "i"}},
+            {"email": {"$regex": safe_search, "$options": "i"}},
+            {"phone": {"$regex": safe_search, "$options": "i"}},
         ]
     return query
 
