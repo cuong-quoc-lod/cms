@@ -67,22 +67,3 @@ jobs:
           push: true
           tags: ${{ steps.meta-frontend.outputs.tags }}
           labels: ${{ steps.meta-frontend.outputs.labels }}
-
-      - name: Deploy to server
-        env:
-          DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
-          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
-          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
-        run: |
-          mkdir -p ~/.ssh
-          echo "$DEPLOY_KEY" > ~/.ssh/deploy_key
-          chmod 600 ~/.ssh/deploy_key
-          ssh-keyscan -H $DEPLOY_HOST >> ~/.ssh/known_hosts
-          
-          ssh -i ~/.ssh/deploy_key $DEPLOY_USER@$DEPLOY_HOST << 'EOF'
-            cd ~/cms
-            docker pull ${{ env.REGISTRY }}/${{ secrets.DOCKER_USERNAME }}/cms-backend:latest
-            docker pull ${{ env.REGISTRY }}/${{ secrets.DOCKER_USERNAME }}/cms-frontend:latest
-            docker-compose -f docker-compose.yml up -d
-            docker image prune -f
-          EOF
